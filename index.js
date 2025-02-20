@@ -8,23 +8,8 @@ const fs = require('fs');
 
 const app = express();
 
-// HTTPS configuration
-const useHTTPS = process.env.NODE_ENV === 'production';
-if (useHTTPS) {
-  try {
-    const options = {
-      key: fs.readFileSync(process.env.SSL_KEY_PATH),
-      cert: fs.readFileSync(process.env.SSL_CERT_PATH)
-    };
-    const httpsServer = https.createServer(options, app);
-    httpsServer.listen(443, () => {
-      console.log('HTTPS Server running on port 443');
-    });
-  } catch (error) {
-    console.error('Failed to start HTTPS server:', error);
-    process.exit(1);
-  }
-}
+// Vercel handles HTTPS automatically
+const useHTTPS = false;
 
 // Multer config with memory storage
 const upload = multer({
@@ -37,7 +22,7 @@ const upload = multer({
 
 // Middleware
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static('public'));
+app.use(express.static(path.join(__dirname, 'public')));
 
 // Security middleware
 app.use((req, res, next) => {
@@ -55,7 +40,17 @@ app.use((req, res, next) => {
 
 // Routes
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+  try {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+  } catch (error) {
+    console.error('Error serving index.html:', error);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
+// Add a catch-all route to handle 404s
+app.use((req, res) => {
+  res.status(404).send('Not Found');
 });
 
 app.post('/send-email', upload.array('attachments'), async (req, res) => {
