@@ -5,8 +5,87 @@ const nodemailer = require('nodemailer');
 const path = require('path');
 const https = require('https');
 const fs = require('fs');
+const swaggerUi = require('swagger-ui-express');
+const swaggerJsdoc = require('swagger-jsdoc');
 
 const app = express();
+
+// Swagger definition
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     EmailRequest:
+ *       type: object
+ *       required:
+ *         - name
+ *         - email
+ *         - subject
+ *         - message
+ *       properties:
+ *         name:
+ *           type: string
+ *           example: John Doe
+ *         email:
+ *           type: string
+ *           format: email
+ *           example: john@example.com
+ *         subject:
+ *           type: string
+ *           example: Meeting Request
+ *         message:
+ *           type: string
+ *           example: Hello, I would like to schedule a meeting.
+ *         attachments:
+ *           type: array
+ *           items:
+ *             type: string
+ *             format: binary
+ *   responses:
+ *     Success:
+ *       description: Operation completed successfully
+ *       content:
+ *         text/html:
+ *           schema:
+ *             type: string
+ *     Error:
+ *       description: Operation failed
+ *       content:
+ *         text/html:
+ *           schema:
+ *             type: string
+ */
+
+const swaggerOptions = {
+  definition: {
+    openapi: '3.0.0',
+    info: {
+      title: 'Email Sending API',
+      version: '1.0.0',
+      description: 'API for sending emails with attachments',
+      contact: {
+        name: 'API Support',
+        email: 'support@example.com'
+      }
+    },
+    servers: [
+      {
+        url: 'http://localhost:3000',
+        description: 'Development server'
+      }
+    ],
+    tags: [
+      {
+        name: 'Email',
+        description: 'Email operations'
+      }
+    ]
+  },
+  apis: ['./index.js']
+};
+
+const swaggerDocs = swaggerJsdoc(swaggerOptions);
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 // Vercel handles HTTPS automatically
 const useHTTPS = false;
@@ -39,20 +118,43 @@ app.use((req, res, next) => {
 });
 
 // Routes
-app.get('/', (req, res) => {
-  try {
-    res.sendFile(path.join(__dirname, 'public', 'index.html'));
-  } catch (error) {
-    console.error('Error serving index.html:', error);
-    res.status(500).send('Internal Server Error');
-  }
-});
+/**
+ * @swagger
+ * /:
+ *   get:
+ *     tags: [Email]
+ *     summary: Get email form
+ *     description: Returns the HTML page containing the email form
+ *     responses:
+ *       200:
+ *         description: HTML page successfully returned
+ *         content:
+ *           text/html:
+ *             schema:
+ *               type: string
+ */
 
-// Add a catch-all route to handle 404s
-app.use((req, res) => {
-  res.status(404).send('Not Found');
-});
-
+/**
+ * @swagger
+ * /send-email:
+ *   post:
+ *     tags: [Email]
+ *     summary: Send email with attachments
+ *     description: Sends an email with optional file attachments
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             $ref: '#/components/schemas/EmailRequest'
+ *     responses:
+ *       200:
+ *         $ref: '#/components/responses/Success'
+ *       400:
+ *         $ref: '#/components/responses/Error'
+ *       500:
+ *         $ref: '#/components/responses/Error'
+ */
 app.post('/send-email', upload.array('attachments'), async (req, res) => {
   try {
     const { name, email, message, subject, recipients } = req.body;
