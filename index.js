@@ -77,36 +77,15 @@ const app = express();
  *             type: string
  */
 
-const swaggerOptions = {
-  definition: {
-    openapi: '3.0.0',
-    info: {
-      title: 'Email Sending API',
-      version: '1.0.0',
-      description: 'API for sending emails with attachments',
-      contact: {
-        name: 'API Support',
-        email: 'support@example.com'
-      }
-    },
-    servers: [
-      {
-        url: process.env.NODE_ENV === 'production' ? 'https://emailsender-five.vercel.app' : 'http://localhost:3000',
-        description: process.env.NODE_ENV === 'production' ? 'Production server' : 'Development server'
-      }
-    ],
-    tags: [
-      {
-        name: 'Email',
-        description: 'Email operations'
-      }
-    ]
-  },
-  apis: ['./index.js']
-};
+const swaggerDocs = require('./swagger');
 
-const swaggerDocs = swaggerJsdoc(swaggerOptions);
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
+// Serve Swagger UI with proper CORS and static file handling
+app.use('/api-docs', (req, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+  res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+  next();
+}, swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 // Vercel handles HTTPS automatically
 const useHTTPS = false;
