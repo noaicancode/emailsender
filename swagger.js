@@ -10,8 +10,8 @@ const options = {
     },
     servers: [
       {
-        url: process.env.NODE_ENV === 'production' ? 'https://emailsender-five.vercel.app' : 'http://localhost:3000',
-        description: process.env.NODE_ENV === 'production' ? 'Production server' : 'Development server'
+        url: '/',
+        description: 'Current environment'
       }
     ],
   },
