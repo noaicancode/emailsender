@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Form</title>
+    <link rel="stylesheet" href="styles.css" type="text/css">
+</head>
+<body>
+    <form id="emailForm" enctype="multipart/form-data">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required>
+
+        <label for="email">Your Email:</label>
+        <input type="email" id="email" name="email" required>
+
+        <label for="recipients">Recipients (comma-separated):</label>
+        <input type="text" id="recipients" name="recipients" placeholder="recipient1@example.com, recipient2@example.com" required>
+
+        <label for="subject">Subject:</label>
+        <input type="text" id="subject" name="subject" required>
+
+        <label for="message">Message:</label>
+        <textarea id="message" name="message" required></textarea>
+
+        <label for="attachments">Attachments (max 5 files):</label>
+        <input type="file" id="attachments" name="attachments" multiple>
+
+        <h3 style="margin-top: 20px;">SMTP Settings (Optional)</h3>
+        <label for="smtp_host">SMTP Host:</label>
+        <input type="text" id="smtp_host" name="smtp_host" placeholder="e.g., smtp.example.com">
+
+        <label for="smtp_port">SMTP Port:</label>
+        <input type="number" id="smtp_port" name="smtp_port" placeholder="e.g., 587">
+
+        <label for="smtp_secure">Secure Connection:</label>
+        <select id="smtp_secure" name="smtp_secure">
+            <option value="">Use Default</option>
+            <option value="true">Yes</option>
+            <option value="false">No</option>
+        </select>
+
+        <label for="smtp_user">SMTP Username:</label>
+        <input type="text" id="smtp_user" name="smtp_user" placeholder="SMTP username">
+
+        <label for="smtp_pass">SMTP Password:</label>
+        <input type="password" id="smtp_pass" name="smtp_pass" placeholder="SMTP password">
+
+        <div class="status-message"></div>
+        <button type="submit">Send Email</button>
+    </form>
+
+    <script>
+        document.getElementById('emailForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const form = e.target;
+            const formData = new FormData(form);
+            const button = form.querySelector('button[type="submit"]');
+            const statusDiv = form.querySelector('.status-message');
+
+            try {
+                button.disabled = true;
+                statusDiv.textContent = 'Sending...';
+                statusDiv.className = 'status-message processing';
+
+                const response = await fetch('/send-email', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await response.text();
+                
+                if (!response.ok) throw new Error(result);
+                
+                statusDiv.innerHTML = 'Email sent successfully!';
+                statusDiv.className = 'status-message success';
+                form.reset();
+            } catch (error) {
+                statusDiv.textContent = `Error: ${error.message}`;
+                statusDiv.className = 'status-message error';
+            } finally {
+                button.disabled = false;
+                setTimeout(() => {
+                    statusDiv.textContent = '';
+                    statusDiv.className = 'status-message';
+                }, 5000);
+            }
+        });
+    </script>
+</body>
+</html>

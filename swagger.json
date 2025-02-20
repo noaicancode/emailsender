@@ -1,0 +1,120 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Email Sender API",
+    "description": "API for sending emails with attachments and multiple recipients",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000",
+      "description": "Development server"
+    }
+  ],
+  "paths": {
+    "/send-email": {
+      "post": {
+        "summary": "Send an email with optional attachments to multiple recipients",
+        "description": "Sends an email with the provided details and optional file attachments to one or more recipients",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "Sender's name",
+                    "example": "John Doe"
+                  },
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "description": "Sender's email address",
+                    "example": "john@example.com"
+                  },
+                  "recipients": {
+                    "type": "string",
+                    "description": "Comma-separated list of recipient email addresses",
+                    "example": "recipient1@example.com, recipient2@example.com",
+                    "pattern": "^[^\\s@]+@[^\\s@]+\\.[^\\s@]+(\\s*,\\s*[^\\s@]+@[^\\s@]+\\.[^\\s@]+)*$"
+                  },
+                  "subject": {
+                    "type": "string",
+                    "description": "Email subject",
+                    "example": "Meeting Request"
+                  },
+                  "message": {
+                    "type": "string",
+                    "description": "Email message content",
+                    "example": "Hello, I would like to schedule a meeting."
+                  },
+                  "attachments": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "format": "binary"
+                    },
+                    "description": "File attachments (max 5 files, 10MB each)"
+                  },
+                  "smtp_host": {
+                    "type": "string",
+                    "description": "SMTP server hostname (optional, uses environment config if not provided)",
+                    "example": "smtp.example.com"
+                  },
+                  "smtp_port": {
+                    "type": "integer",
+                    "description": "SMTP server port (optional, uses environment config if not provided)",
+                    "example": 587
+                  },
+                  "smtp_secure": {
+                    "type": "boolean",
+                    "description": "Use secure SMTP connection (optional, uses environment config if not provided)",
+                    "example": true
+                  },
+                  "smtp_user": {
+                    "type": "string",
+                    "description": "SMTP username (optional, uses environment config if not provided)",
+                    "example": "user@example.com"
+                  },
+                  "smtp_pass": {
+                    "type": "string",
+                    "description": "SMTP password (optional, uses environment config if not provided)",
+                    "format": "password",
+                    "example": "your-smtp-password"
+                  }
+                },
+                "required": ["name", "email", "subject", "message", "recipients"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Email sent successfully",
+            "content": {
+              "text/html": {
+                "schema": {
+                  "type": "string",
+                  "example": "<script>alert(\"Email sent successfully!\");window.location.href=\"/\";</script>"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "text/html": {
+                "schema": {
+                  "type": "string",
+                  "example": "<script>alert(\"Error: Failed to send email\");window.location.href=\"/\";</script>"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
