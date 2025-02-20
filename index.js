@@ -41,6 +41,27 @@ const app = express();
  *           items:
  *             type: string
  *             format: binary
+ *         smtp_host:
+ *           type: string
+ *           description: SMTP server hostname
+ *           example: smtp.example.com
+ *         smtp_port:
+ *           type: integer
+ *           description: SMTP server port
+ *           example: 587
+ *         smtp_secure:
+ *           type: boolean
+ *           description: Use secure SMTP connection
+ *           example: true
+ *         smtp_user:
+ *           type: string
+ *           description: SMTP username
+ *           example: user@example.com
+ *         smtp_pass:
+ *           type: string
+ *           format: password
+ *           description: SMTP password
+ *           example: your-smtp-password
  *   responses:
  *     Success:
  *       description: Operation completed successfully
