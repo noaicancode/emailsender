@@ -13,7 +13,7 @@
       "src": "swagger.js",
       "use": "@vercel/node",
       "config": {
-        "maxDuration": 5
+        "maxDuration": 30
       }
     }
   ],
@@ -22,14 +22,20 @@
       "src": "/api-docs",
       "dest": "/swagger.js",
       "headers": {
-        "Cache-Control": "s-maxage=3600"
+        "Cache-Control": "s-maxage=3600",
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+        "Access-Control-Allow-Headers": "X-Requested-With,content-type"
       }
     },
     {
       "src": "/api-docs/(.*)",
       "dest": "/swagger.js",
       "headers": {
-        "Cache-Control": "s-maxage=3600"
+        "Cache-Control": "s-maxage=3600",
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+        "Access-Control-Allow-Headers": "X-Requested-With,content-type"
       }
     },
     {

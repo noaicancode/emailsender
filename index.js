@@ -79,13 +79,24 @@ const app = express();
 
 const swaggerDocs = require('./swagger');
 
-// Serve Swagger UI with proper CORS and static file handling
+// Serve Swagger UI with optimized middleware for serverless environment
 app.use('/api-docs', (req, res, next) => {
+  // Set CORS headers for Swagger UI
   res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+  res.setHeader('Cache-Control', 'public, max-age=0');
   next();
-}, swaggerUi.serve, swaggerUi.setup(swaggerDocs));
+}, swaggerUi.serve);
+
+// Serve Swagger UI with pre-generated docs
+app.get('/api-docs', swaggerUi.setup(swaggerDocs, {
+  customCss: '.swagger-ui .topbar { display: none }',
+  swaggerOptions: {
+    persistAuthorization: true,
+    displayRequestDuration: true
+  }
+}));
 
 // Vercel handles HTTPS automatically
 const useHTTPS = false;
