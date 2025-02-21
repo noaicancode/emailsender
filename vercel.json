@@ -11,17 +11,26 @@
     },
     {
       "src": "swagger.js",
-      "use": "@vercel/node"
+      "use": "@vercel/node",
+      "config": {
+        "maxDuration": 5
+      }
     }
   ],
   "routes": [
     {
       "src": "/api-docs",
-      "dest": "/index.js"
+      "dest": "/swagger.js",
+      "headers": {
+        "Cache-Control": "s-maxage=3600"
+      }
     },
     {
       "src": "/api-docs/(.*)",
-      "dest": "/swagger.js"
+      "dest": "/swagger.js",
+      "headers": {
+        "Cache-Control": "s-maxage=3600"
+      }
     },
     {
       "src": "/send-email",
