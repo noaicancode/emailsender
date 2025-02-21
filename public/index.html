@@ -106,19 +106,31 @@
 
                 const response = await fetch('/send-email', {
                     method: 'POST',
-                    body: formData
+                    body: formData,
+                    headers: {
+                        'Accept': 'application/json'
+                    },
+                    redirect: 'follow'
                 });
 
-                const result = await response.text();
-                
-                if (!response.ok) throw new Error(result);
-                
-                document.body.innerHTML = result;
+                if (!response.ok) {
+                    const errorData = await response.text();
+                    throw new Error(errorData || 'Failed to send email');
+                }
+
+                statusDiv.textContent = 'Email sent successfully!';
+                statusDiv.className = 'status-message success';
+                form.reset();
             } catch (error) {
                 console.error('Error:', error);
-                statusDiv.textContent = error.message;
+                statusDiv.textContent = `Error: ${error.message}`;
                 statusDiv.className = 'status-message error';
+            } finally {
                 button.disabled = false;
+                setTimeout(() => {
+                    statusDiv.textContent = '';
+                    statusDiv.className = 'status-message';
+                }, 5000);
             }
         });
     </script>
