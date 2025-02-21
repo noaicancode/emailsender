@@ -4,16 +4,32 @@
     {
       "src": "index.js",
       "use": "@vercel/node"
+    },
+    {
+      "src": "public/**",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "swagger.js",
+      "use": "@vercel/node"
     }
   ],
   "routes": [
     {
+      "src": "/api-docs",
+      "dest": "/index.js"
+    },
+    {
       "src": "/api-docs/(.*)",
-      "dest": "/api-docs/$1"
+      "dest": "/swagger.js"
+    },
+    {
+      "src": "/send-email",
+      "dest": "/index.js"
     },
     {
       "src": "/(.*)",
-      "dest": "/index.js"
+      "dest": "/public/$1"
     }
   ]
 }

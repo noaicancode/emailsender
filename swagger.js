@@ -10,8 +10,8 @@ const options = {
     },
     servers: [
       {
-        url: '/',
-        description: 'Current environment'
+        url: process.env.NODE_ENV === 'production' ? 'https://smtp-api.vercel.app' : 'http://localhost:3000',
+        description: process.env.NODE_ENV === 'production' ? 'Production server' : 'Development server'
       }
     ],
   },
