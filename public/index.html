@@ -5,8 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Email Form</title>
     <link rel="stylesheet" href="styles.css" type="text/css">
+    <script type="module">
+        import RootLayout from './layout.js';
+        window.RootLayout = RootLayout;
+    </script>
 </head>
 <body>
+    <div id="root"></div>
+    <script type="module">
+        const root = document.getElementById('root');
+        const layout = new window.RootLayout({
+            children: `
     <div class="container">
         <div class="form-section">
             <h2>Send Email</h2>
@@ -123,7 +132,7 @@
                 form.reset();
             } catch (error) {
                 console.error('Error:', error);
-                statusDiv.textContent = `Error: ${error.message}`;
+                statusDiv.textContent = 'Error: ' + error.message;
                 statusDiv.className = 'status-message error';
             } finally {
                 button.disabled = false;
@@ -133,6 +142,10 @@
                 }, 5000);
             }
         });
+    <\/script>
+`
+        });
+        root.innerHTML = layout.render();
     </script>
 </body>
 </html>
