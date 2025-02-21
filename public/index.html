@@ -7,48 +7,88 @@
     <link rel="stylesheet" href="styles.css" type="text/css">
 </head>
 <body>
-    <form id="emailForm" enctype="multipart/form-data">
-        <label for="name">Name:</label>
-        <input type="text" id="name" name="name" required>
+    <div class="container">
+        <div class="form-section">
+            <h2>Send Email</h2>
+            <form id="emailForm" enctype="multipart/form-data">
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name" required>
 
-        <label for="email">Your Email:</label>
-        <input type="email" id="email" name="email" required>
+                <label for="email">Your Email:</label>
+                <input type="email" id="email" name="email" required>
 
-        <label for="recipients">Recipients (comma-separated):</label>
-        <input type="text" id="recipients" name="recipients" placeholder="recipient1@example.com, recipient2@example.com" required>
+                <label for="recipients">Recipients (comma-separated):</label>
+                <input type="text" id="recipients" name="recipients" placeholder="recipient1@example.com, recipient2@example.com" required>
 
-        <label for="subject">Subject:</label>
-        <input type="text" id="subject" name="subject" required>
+                <label for="subject">Subject:</label>
+                <input type="text" id="subject" name="subject" required>
 
-        <label for="message">Message:</label>
-        <textarea id="message" name="message" required></textarea>
+                <label for="message">Message:</label>
+                <textarea id="message" name="message" required></textarea>
 
-        <label for="attachments">Attachments (max 5 files):</label>
-        <input type="file" id="attachments" name="attachments" multiple>
+                <label for="attachments">Attachments (max 5 files):</label>
+                <input type="file" id="attachments" name="attachments" multiple>
 
-        <h3 style="margin-top: 20px;">SMTP Settings (Optional)</h3>
-        <label for="smtp_host">SMTP Host:</label>
-        <input type="text" id="smtp_host" name="smtp_host" placeholder="e.g., smtp.example.com">
+                <h3 style="margin-top: 20px;">SMTP Settings (Optional)</h3>
+                <label for="smtp_host">SMTP Host:</label>
+                <input type="text" id="smtp_host" name="smtp_host" placeholder="e.g., smtp.example.com">
 
-        <label for="smtp_port">SMTP Port:</label>
-        <input type="number" id="smtp_port" name="smtp_port" placeholder="e.g., 587">
+                <label for="smtp_port">SMTP Port:</label>
+                <input type="number" id="smtp_port" name="smtp_port" placeholder="e.g., 587">
 
-        <label for="smtp_secure">Secure Connection:</label>
-        <select id="smtp_secure" name="smtp_secure">
-            <option value="">Use Default</option>
-            <option value="true">Yes</option>
-            <option value="false">No</option>
-        </select>
+                <label for="smtp_secure">Secure Connection:</label>
+                <select id="smtp_secure" name="smtp_secure">
+                    <option value="">Use Default</option>
+                    <option value="true">Yes</option>
+                    <option value="false">No</option>
+                </select>
 
-        <label for="smtp_user">SMTP Username:</label>
-        <input type="text" id="smtp_user" name="smtp_user" placeholder="SMTP username">
+                <label for="smtp_user">SMTP Username:</label>
+                <input type="text" id="smtp_user" name="smtp_user" placeholder="SMTP username">
 
-        <label for="smtp_pass">SMTP Password:</label>
-        <input type="password" id="smtp_pass" name="smtp_pass" placeholder="SMTP password">
+                <label for="smtp_pass">SMTP Password:</label>
+                <input type="password" id="smtp_pass" name="smtp_pass" placeholder="SMTP password">
 
-        <div class="status-message"></div>
-        <button type="submit">Send Email</button>
-    </form>
+                <div class="status-message"></div>
+                <button type="submit">Send Email</button>
+            </form>
+        </div>
+
+        <div class="api-docs">
+            <h2>API Documentation</h2>
+            <p>View the complete API documentation at <a href="/api-docs" target="_blank">/api-docs</a></p>
+            
+            <h3>Available Endpoints</h3>
+            
+            <div class="endpoint">
+                <h4>POST /send-email</h4>
+                <p>Send an email with optional attachments to multiple recipients.</p>
+                
+                <h5>Request Body (multipart/form-data)</h5>
+                <pre>
+{
+    "name": "John Doe",              // Required
+    "email": "john@example.com",      // Required
+    "recipients": "email1@example.com, email2@example.com",  // Required
+    "subject": "Meeting Request",     // Required
+    "message": "Hello...",           // Required
+    "attachments": [File],           // Optional, max 5 files, 10MB each
+    "smtp_host": "smtp.example.com", // Optional
+    "smtp_port": 587,               // Optional
+    "smtp_secure": true,            // Optional
+    "smtp_user": "user@example.com", // Optional
+    "smtp_pass": "password"          // Optional
+}</pre>
+                
+                <h5>Response</h5>
+                <p>Success (200 OK):</p>
+                <pre>HTML response with success message and redirect</pre>
+                
+                <p>Error (400/500):</p>
+                <pre>HTML response with error message and redirect</pre>
+            </div>
+        </div>
+    </div>
 
     <script>
         document.getElementById('emailForm').addEventListener('submit', async (e) => {
@@ -73,18 +113,12 @@
                 
                 if (!response.ok) throw new Error(result);
                 
-                statusDiv.innerHTML = 'Email sent successfully!';
-                statusDiv.className = 'status-message success';
-                form.reset();
+                document.body.innerHTML = result;
             } catch (error) {
-                statusDiv.textContent = `Error: ${error.message}`;
+                console.error('Error:', error);
+                statusDiv.textContent = error.message;
                 statusDiv.className = 'status-message error';
-            } finally {
                 button.disabled = false;
-                setTimeout(() => {
-                    statusDiv.textContent = '';
-                    statusDiv.className = 'status-message';
-                }, 5000);
             }
         });
     </script>

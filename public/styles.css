@@ -5,75 +5,150 @@ body {
     background-color: #f0f2f5;
 }
 
-form {
-    max-width: 600px;
-    margin: 2rem auto;
-    padding: 2rem;
-    background: white;
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+}
+
+.form-section {
+    background: #fff;
+    padding: 20px;
     border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.api-docs {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.api-docs pre {
+    background: #272822;
+    color: #f8f8f2;
+    padding: 15px;
+    border-radius: 4px;
+    overflow-x: auto;
+    font-family: monospace;
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+.api-docs h2 {
+    color: #333;
+    margin-bottom: 15px;
+}
+
+.api-docs h3 {
+    color: #444;
+    margin: 20px 0 10px;
+}
+
+.api-docs h4 {
+    color: #0056b3;
+    margin: 15px 0 10px;
+}
+
+.api-docs h5 {
+    color: #666;
+    margin: 10px 0 5px;
+}
+
+.api-docs p {
+    color: #555;
+    line-height: 1.6;
+}
+
+.api-docs a {
+    color: #0056b3;
+    text-decoration: none;
+}
+
+.api-docs a:hover {
+    text-decoration: underline;
+}
+
+.endpoint {
+    margin: 20px 0;
+    padding: 15px;
+    background: #fff;
+    border-radius: 4px;
+    border-left: 4px solid #0056b3;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
 }
 
 label {
-    display: block;
-    margin: 1rem 0 0.5rem;
-    color: #333;
-    font-weight: 500;
+    font-weight: bold;
+    color: #444;
 }
 
-input, textarea, file-selector-button {
-    width: 100%;
-    padding: 0.8rem;
-    margin-bottom: 1rem;
+input[type="text"],
+input[type="email"],
+input[type="number"],
+input[type="password"],
+textarea,
+select {
+    padding: 8px;
     border: 1px solid #ddd;
     border-radius: 4px;
-    box-sizing: border-box;
-    font-size: 1rem;
+    font-size: 14px;
 }
 
 textarea {
-    height: 120px;
+    min-height: 100px;
     resize: vertical;
 }
 
-button[type="submit"] {
-    background: #007bff;
+button {
+    background: #0056b3;
     color: white;
-    padding: 1rem 2rem;
+    padding: 10px 20px;
     border: none;
     border-radius: 4px;
     cursor: pointer;
-    font-size: 1rem;
-    transition: background 0.3s ease;
+    font-size: 16px;
+    transition: background 0.3s;
 }
 
-button[type="submit"]:hover {
-    background: #0056b3;
+button:hover {
+    background: #003d82;
+}
+
+button:disabled {
+    background: #ccc;
+    cursor: not-allowed;
 }
 
 .status-message {
-    margin: 1rem 0;
-    padding: 0.8rem;
+    padding: 10px;
     border-radius: 4px;
-    display: none;
+    margin-top: 10px;
 }
 
 .status-message.processing {
-    display: block;
-    background: #fff3cd;
-    color: #856404;
-}
-
-.status-message.success {
-    display: block;
-    background: #d4edda;
-    color: #155724;
+    background: #e3f2fd;
+    color: #0056b3;
 }
 
 .status-message.error {
-    display: block;
-    background: #f8d7da;
-    color: #721c24;
+    background: #ffebee;
+    color: #c62828;
+}
+
+@media (max-width: 768px) {
+    .container {
+        grid-template-columns: 1fr;
+    }
 }
 
 @media (max-width: 640px) {
